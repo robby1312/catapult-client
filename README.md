@@ -41,4 +41,4 @@ The Catapult app itself stays installed.
 Catapult is a product of XDT Pty Ltd. This repository only automates the installation and adds Wiicco branding as described in the Catapult manual.
 
 ## For Wiicco: building the Mac package
-On a Mac: `bash mac/build-pkg.sh` creates `mac/Catapult-for-Wiicco-<version>.pkg`. Optional signing: `SIGN_ID="Developer ID Installer: ..." bash mac/build-pkg.sh`. Upload the pkg to a GitHub release as `Catapult-for-Wiicco.pkg`.
+On a Mac: `bash mac/build-pkg.sh` creates `mac/Catapult-for-Wiicco-<version>.pkg`. Optional signing: `SIGN_ID="Developer ID Installer: ..." bash mac/build-pkg.sh`. Attach the pkg to a new GitHub release (tag v<version>).
