@@ -9,7 +9,7 @@ Installs the **Catapult** file transfer app for use with Wiicco servers, with Wi
 ## Install
 
 ### Mac
-**Option 1: installer package.** Download `Catapult-for-Wiicco.pkg` from the [latest release](https://github.com/robby1312/catapult-client/releases/latest) and double-click it.
+**Option 1: installer package.** Download `Catapult-for-Wiicco-<version>.pkg` from the [latest release](https://github.com/robby1312/catapult-client/releases/latest) and double-click it.
 
 **Option 2: one line in Terminal.**
 ```bash
