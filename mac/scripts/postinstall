@@ -1,0 +1,28 @@
+#!/bin/bash
+# Wiicco Catapult client: installs the official Catapult app from XDT (if missing) and the Wiicco logo service.
+LOG=/var/log/wiicco-catapult-install.log; exec >>"$LOG" 2>&1; echo "== $(date) postinstall"
+URL="$(cat /Library/Wiicco/Catapult/catapult-mac-url 2>/dev/null)"
+if [ ! -d /Applications/Catapult.app ] && [ -n "$URL" ]; then
+  T=$(mktemp -d); echo "Downloading Catapult from $URL"
+  if curl -fsSL -o "$T/dl" "$URL"; then
+    case "$(file -b "$T/dl")" in
+      *xar*|*"XAR archive"*) installer -pkg "$T/dl" -target / ;;
+      *zlib*|*bzip2*|*"Apple Disk Image"*|*data*)
+        MP=$(hdiutil attach -nobrowse -readonly "$T/dl" | awk -F'\t' '/\/Volumes\//{print $NF; exit}')
+        if [ -n "$MP" ]; then
+          if [ -d "$MP/Catapult.app" ]; then ditto "$MP/Catapult.app" /Applications/Catapult.app
+          else P=$(ls "$MP"/*.pkg 2>/dev/null | head -1); [ -n "$P" ] && installer -pkg "$P" -target /; fi
+          hdiutil detach "$MP" -quiet
+        fi ;;
+      *Zip*) ditto -x -k "$T/dl" "$T/x" && ditto "$T/x/Catapult.app" /Applications/Catapult.app ;;
+    esac
+    xattr -dr com.apple.quarantine /Applications/Catapult.app 2>/dev/null || true
+  else echo "Download failed"; fi
+  rm -rf "$T"
+fi
+chmod 755 /Library/Wiicco/Catapult/*.sh
+chown root:wheel /Library/LaunchDaemons/com.wiicco.catapult-logo.plist; chmod 644 /Library/LaunchDaemons/com.wiicco.catapult-logo.plist
+launchctl bootout system /Library/LaunchDaemons/com.wiicco.catapult-logo.plist 2>/dev/null || true
+launchctl bootstrap system /Library/LaunchDaemons/com.wiicco.catapult-logo.plist
+/bin/bash /Library/Wiicco/Catapult/apply-logo.sh
+echo "done"; exit 0
